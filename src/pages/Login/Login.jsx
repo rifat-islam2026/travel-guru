@@ -1,6 +1,8 @@
+import { useContext } from "react"
 import { FaFacebook, FaGoogle } from "react-icons/fa"
-import { Link, NavLink } from "react-router-dom"
+import { Link, NavLink, useNavigate } from "react-router-dom"
 import logo from "../../assets/logo2.png"
+import { AuthContext } from "../../providers/AuthProvider/AuthProvider"
 
 function Login() {
     const navLinks = <>
@@ -11,9 +13,24 @@ function Login() {
         <li><NavLink to="/contact">Contact</NavLink></li>
     </>
 
+    const { signInUser } = useContext(AuthContext);
+    const navigate = useNavigate();
+
     const handelLogin = e => {
         e.preventDefault()
-
+        const form = new FormData(e.currentTarget);
+        const email = form.get("email");
+        const password = form.get("password");
+        
+        signInUser(email, password)
+            .then(result => {
+                e.target.reset()
+                navigate("/")
+                console.log(result.user)
+            })
+            .catch(error => {
+                console.log(error.message)
+            })
     }
 
   return (
@@ -60,7 +77,7 @@ function Login() {
               </div>
           </header>
           <div>
-              <div className="min-h-screen">
+              <div>
                   <div className="flex-col">
                       <div className="text-center">
                           <h1 className="text-5xl font-bold py-5">Please Login</h1>
@@ -106,7 +123,7 @@ function Login() {
                       </div>
                   </div>
               </div>
-              <div className="text-center mb-20">
+              <div className="text-center mb-10">
                   <span className="font-semibold">OR</span>
                   <br />
                   <div className="flex justify-center mx-auto my-4">

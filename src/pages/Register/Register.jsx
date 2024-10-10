@@ -1,6 +1,8 @@
+import { useContext } from "react"
 import { FaFacebook, FaGoogle } from "react-icons/fa"
-import { Link, NavLink } from "react-router-dom"
+import { Link, NavLink, useNavigate } from "react-router-dom"
 import logo from "../../assets/logo2.png"
+import { AuthContext } from "../../providers/AuthProvider/AuthProvider"
 
 function Register() {
   const navLinks = <>
@@ -11,8 +13,24 @@ function Register() {
     <li><NavLink to="/contact">Contact</NavLink></li>
   </>
 
+  const { createUser } = useContext(AuthContext);
+  const navigate = useNavigate();
+
   const handelRegister = e => {
     e.preventDefault()
+    const form = new FormData(e.currentTarget);
+    const email = form.get("email");
+    const password = form.get("password");
+    // console.log(email,password)
+    createUser(email, password)
+      .then(result => {
+        e.target.reset();
+        navigate("/login")
+      console.log(result)
+      })
+      .catch(error => {
+      console.log(error.message)
+    })
   }
 
   return (
@@ -59,7 +77,7 @@ function Register() {
         </div>
       </header>
 
-      <div className="min-h-screen">
+      <div>
         <div className="flex-col">
           <div className="text-center">
             <h1 className="text-5xl font-bold py-5">Please Register</h1>
@@ -120,14 +138,14 @@ function Register() {
                 </div>
               </div>
               <div className="form-control mt-6">
-                <button className="btn btn-primary">Login</button>
+                <button className="btn btn-primary">Register</button>
               </div>
               <p className="font-semibold text-center py-2">Already have an account? <Link className="text-orange-500" to="/login">Login</Link></p>
             </form>
           </div>
         </div>
       </div>
-      <div className="text-center mb-20">
+      <div className="text-center mb-10">
         <span className="font-semibold">OR</span>
         <br />
         <div className="flex justify-center mx-auto my-4">
